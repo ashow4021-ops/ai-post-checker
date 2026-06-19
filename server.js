@@ -60,6 +60,9 @@ app.post("/api", async (req, res) => {
   res.json({ result });
 });
 
-app.listen(3000, () => {
-  console.log("server running http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("server running on port " + PORT);
 });
+``
