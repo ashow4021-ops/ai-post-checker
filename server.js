@@ -1,11 +1,20 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ APIキー（Renderの環境変数から取得）
+// ✅ パス設定（HTML表示用）
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ index.html を公開する
+app.use(express.static(__dirname));
+
+// ✅ APIキー（Renderの環境変数）
 const API_KEY = process.env.OPENAI_API_KEY;
 
 // ✅ AI呼び出し
@@ -26,7 +35,6 @@ async function callAI(prompt) {
 
   const data = await res.json();
 
-  // デバッグ表示
   console.log("AIレスポンス:", data);
 
   if (!data.choices) {
@@ -36,7 +44,7 @@ async function callAI(prompt) {
   return data.choices[0].message.content;
 }
 
-// ✅ APIエンドポイント
+// ✅ 投稿チェックAPI
 app.post("/api", async (req, res) => {
   const text = req.body.text;
 
@@ -66,7 +74,7 @@ app.post("/api", async (req, res) => {
   res.json({ result });
 });
 
-// ✅ Render対応ポート（これが超重要）
+// ✅ Render用ポート（超重要）
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
