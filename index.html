@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>投稿チェッカーAI</title>
+</head>
+<body>
+
+<h2>投稿チェッカーAI</h2>
+
+<input id="post" placeholder="投稿を書く" style="width:300px;">
+<button onclick="send()">チェック</button>
+
+<pre id="output"></pre>
+
+<script>
+async function send() {
+  const text = document.getElementById("post").value;
+  const output = document.getElementById("output");
+
+  output.innerText = "AIが分析中...";
+
+  try {
+    const res = await fetch("http://localhost:3000/api", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ text })
+    });
+
+    const data = await res.json();
+    output.innerText = data.result;
+
+  } catch (e) {
+    output.innerText = "エラー発生";
+    console.log(e);
+  }
+}
+</script>
+
+</body>
+</html>
